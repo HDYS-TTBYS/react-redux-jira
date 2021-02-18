@@ -1,0 +1,35 @@
+version: "3"
+
+volumes:
+  node_modules:
+services:
+  django:
+    restart: always
+    build:
+      context: .
+      dockerfile: "./Dockerfile.django"
+    container_name: "django"
+    working_dir: "/usr/src/app"
+    tty: true
+    user: root
+    ports:
+      - "8000:1:8000"
+    expose:
+      - "8000"
+    volumes:
+      - ./api:/usr/src/app:delegated
+
+  react:
+    build:
+      context: .
+      dockerfile: "./Dockerfile.react"
+    container_name: "react"
+    working_dir: "/usr/src/app"
+    tty: true
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    volumes:
+      - ./frontend:/usr/src/app
+      - node_modules:/usr/src/app/node_modules

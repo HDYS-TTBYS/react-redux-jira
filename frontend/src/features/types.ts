@@ -39,7 +39,6 @@ export interface AUTH_STATE {
     isLoginView: boolean
     loginUser: LOGIN_USER
     profiles: PROFILE[]
-    errorMessage: string | null
 }
 
 //taskSlice.ts
@@ -83,7 +82,6 @@ export interface TASK_STATE {
     selectedTask: READ_TASK
     users: USER[]
     categorys: CATEGORY[]
-    errorMessage: string | null
 }
 // TaskList.tsx
 export interface SORT_STATE {

@@ -15,7 +15,7 @@ import {
 axios.defaults.baseURL = process.env.REACT_APP_API_URL
 axios.defaults.timeout = 3000
 
-const localJWT = localStorage.localJWT
+
 
 export const fetchAsyncLogin = createAsyncThunk(
     "auth/login",
@@ -29,6 +29,7 @@ export const fetchAsyncLogin = createAsyncThunk(
                 }
             },
         )
+        console.log("fetchAsyncLogin done")
         return res.data
     }
 )
@@ -45,6 +46,7 @@ export const fetchAsyncRegister = createAsyncThunk(
                 }
             }
         )
+        console.log("fetchAsyncRegister done!")
         return res.data
     }
 )
@@ -56,7 +58,7 @@ export const fetchAsyncGetMyProf = createAsyncThunk(
             `/api/loginuser/`,
             {
                 headers: {
-                    Authorization: `JWT ${localJWT}`,
+                    Authorization: `JWT ${localStorage.localJWT}`,
                 }
             }
         )
@@ -73,10 +75,11 @@ export const fetchAsyncCreateProf = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `JWT ${localJWT}`,
+                    Authorization: `JWT ${localStorage.localJWT}`,
                 }
             }
         )
+        console.log("fetchAsyncCreateProf done")
         return res.data
     }
 )
@@ -88,7 +91,7 @@ export const fetchAsyncGetProfs = createAsyncThunk(
             `/api/profile`,
             {
                 headers: {
-                    Authorization: `JWT ${localJWT}`,
+                    Authorization: `JWT ${localStorage.localJWT}`,
                 }
             }
         )
@@ -107,7 +110,7 @@ export const fetchAsyncUpdateProf = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `JWT ${localJWT}`,
+                    Authorization: `JWT ${localStorage.localJWT}`,
                 }
             }
         )
@@ -128,7 +131,6 @@ const initialState: AUTH_STATE = {
             img: null,
         },
     ],
-    errorMessage: null,
 };
 
 export const authSlice = createSlice({
@@ -142,21 +144,17 @@ export const authSlice = createSlice({
     extraReducers: (builder) => {
         //Login
         builder.addCase(fetchAsyncLogin.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncLogin.fulfilled, (state, action: PayloadAction<JWT>) => {
-            state.errorMessage = null
             localStorage.setItem("localJWT", action.payload.access)
-            action.payload.access && (window.location.href = "/tasks")
+            window.location.href = "/tasks"
         })
         builder.addCase(fetchAsyncLogin.rejected, (state) => {
-            console.log("failed Login")
-            state.errorMessage = "指定された資格情報を持つアクティブなアカウントが見つかりません"
+            window.location.href = "/"
         })
 
         //getMyProf
         builder.addCase(fetchAsyncGetMyProf.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncGetMyProf.fulfilled, (state, action: PayloadAction<LOGIN_USER>) => {
             return {
@@ -165,14 +163,11 @@ export const authSlice = createSlice({
             }
         })
         builder.addCase(fetchAsyncGetMyProf.rejected, (state) => {
-            console.log("failed getMyProf")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
 
         //getProfs
         builder.addCase(fetchAsyncGetProfs.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncGetProfs.fulfilled, (state, action: PayloadAction<PROFILE[]>) => {
             return {
@@ -181,14 +176,11 @@ export const authSlice = createSlice({
             }
         })
         builder.addCase(fetchAsyncGetProfs.rejected, (state) => {
-            console.log("failed getProfs")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
 
         //updateProf
         builder.addCase(fetchAsyncUpdateProf.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncUpdateProf.fulfilled, (state, action: PayloadAction<PROFILE>) => {
             return {
@@ -199,9 +191,7 @@ export const authSlice = createSlice({
             }
         })
         builder.addCase(fetchAsyncUpdateProf.rejected, (state) => {
-            console.log("failed updateProf")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
     }
 },
@@ -213,6 +203,6 @@ export const { toggleMode } = authSlice.actions;
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
 export const selectProfiles = (state: RootState) => state.auth.profiles;
-export const selectErrorMessage = (state: RootState) => state.auth.errorMessage;
+
 
 export default authSlice.reducer;

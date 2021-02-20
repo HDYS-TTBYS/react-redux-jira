@@ -13,14 +13,13 @@ import {
 axios.defaults.baseURL = process.env.REACT_APP_API_URL
 axios.defaults.timeout = 3000
 
-const localJWT = localStorage.localJWT
 
 export const fetchAsyncGetTasks = createAsyncThunk(
     "task/getTasks",
     async () => {
         const res = await axios.get<READ_TASK[]>("/api/tasks/", {
             headers: {
-                Authorization: `JWT ${localJWT}`,
+                Authorization: `JWT ${localStorage.localJWT}`,
             }
         })
         return res.data
@@ -32,7 +31,7 @@ export const fetchAsyncGetUsers = createAsyncThunk(
     async () => {
         const res = await axios.get<USER[]>("/api/users/", {
             headers: {
-                Authorization: `JWT ${localJWT}`,
+                Authorization: `JWT ${localStorage.localJWT}`,
             }
         })
         return res.data
@@ -44,7 +43,7 @@ export const fetchAsyncGetCategory = createAsyncThunk(
     async () => {
         const res = await axios.get<CATEGORY[]>("/api/category/", {
             headers: {
-                Authorization: `JWT ${localJWT}`,
+                Authorization: `JWT ${localStorage.localJWT}`,
             }
         })
         return res.data
@@ -59,7 +58,7 @@ export const fetchAsyncCreateCategory = createAsyncThunk(
             { item: item },
             {
                 headers: {
-                    Authorization: `JWT ${localJWT}`,
+                    Authorization: `JWT ${localStorage.localJWT}`,
                 }
             }
         )
@@ -76,7 +75,7 @@ export const fetchAsyncCreateTask = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `JWT ${localJWT}`,
+                    Authorization: `JWT ${localStorage.localJWT}`,
                 }
             }
         )
@@ -93,7 +92,7 @@ export const fetchAsyncUpdateTask = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `JWT ${localJWT}`,
+                    Authorization: `JWT ${localStorage.localJWT}`,
                 }
             }
         )
@@ -109,7 +108,7 @@ export const fetchAsyncDeleteTask = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `JWT ${localJWT}`,
+                    Authorization: `JWT ${localStorage.localJWT}`,
                 }
             }
         )
@@ -176,7 +175,6 @@ export const initialState: TASK_STATE = {
             item: "",
         }
     ],
-    errorMessage: null,
 };
 
 export const taskSlice = createSlice({
@@ -193,7 +191,6 @@ export const taskSlice = createSlice({
     extraReducers: (builder) => {
         //GetTasks
         builder.addCase(fetchAsyncGetTasks.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncGetTasks.fulfilled, (state, action: PayloadAction<READ_TASK[]>) => {
             return {
@@ -203,13 +200,11 @@ export const taskSlice = createSlice({
         })
         builder.addCase(fetchAsyncGetTasks.rejected, (state) => {
             console.log("failed GetTasks")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
 
         //GetUsers
         builder.addCase(fetchAsyncGetUsers.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncGetUsers.fulfilled, (state, action: PayloadAction<USER[]>) => {
             return {
@@ -219,13 +214,11 @@ export const taskSlice = createSlice({
         })
         builder.addCase(fetchAsyncGetUsers.rejected, (state) => {
             console.log("failed GetUsers")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
 
         //GetCategory
         builder.addCase(fetchAsyncGetCategory.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncGetCategory.fulfilled, (state, action: PayloadAction<CATEGORY[]>) => {
             return {
@@ -235,13 +228,11 @@ export const taskSlice = createSlice({
         })
         builder.addCase(fetchAsyncGetCategory.rejected, (state) => {
             console.log("failed GetCategory")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
 
         //CreateCategory
         builder.addCase(fetchAsyncCreateCategory.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncCreateCategory.fulfilled, (state, action: PayloadAction<CATEGORY>) => {
             return {
@@ -251,13 +242,11 @@ export const taskSlice = createSlice({
         })
         builder.addCase(fetchAsyncCreateCategory.rejected, (state) => {
             console.log("failed CreateCategory")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
 
         //CreateTask
         builder.addCase(fetchAsyncCreateTask.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncCreateTask.fulfilled, (state, action: PayloadAction<READ_TASK>) => {
             return {
@@ -268,13 +257,11 @@ export const taskSlice = createSlice({
         })
         builder.addCase(fetchAsyncCreateTask.rejected, (state) => {
             console.log("failed CreateTask")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
 
         //UpdateTask
         builder.addCase(fetchAsyncUpdateTask.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncUpdateTask.fulfilled, (state, action: PayloadAction<READ_TASK>) => {
             return {
@@ -288,13 +275,11 @@ export const taskSlice = createSlice({
         })
         builder.addCase(fetchAsyncUpdateTask.rejected, (state) => {
             console.log("failed UpdateTask")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
 
         //DeleteTask
         builder.addCase(fetchAsyncDeleteTask.pending, (state) => {
-            state.errorMessage = null
         })
         builder.addCase(fetchAsyncDeleteTask.fulfilled, (state, action: PayloadAction<number>) => {
             return {
@@ -306,8 +291,7 @@ export const taskSlice = createSlice({
         })
         builder.addCase(fetchAsyncDeleteTask.rejected, (state) => {
             console.log("failed DeleteTask")
-            state.errorMessage = "認証情報の有効期限切れです。"
-            // window.location.href = "/"
+            window.location.href = "/"
         })
     }
 },
@@ -321,7 +305,6 @@ export const selectEditedTask = (state: RootState) => state.task.editedTask;
 export const selectSelectedTask = (state: RootState) => state.task.selectedTask;
 export const selectUsers = (state: RootState) => state.task.users;
 export const selectCategory = (state: RootState) => state.task.categorys;
-export const selectErrorMessage = (state: RootState) => state.task.errorMessage;
 
 
 export default taskSlice.reducer;
